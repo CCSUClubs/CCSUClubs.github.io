@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CCSU Clubs</title>
+<meta name="description" content="Student-made sites for CCSU clubs.">
+
+<!-- Favicon & Icons -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- OpenGraph / Social Cards -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="CCSU Clubs">
+<meta property="og:description" content="Student-made sites for CCSU clubs.">
+<meta property="og:image" content="https://ccsuclubs.github.io/og-image.png">
+<meta property="og:url" content="https://ccsuclubs.github.io/">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CCSU Clubs">
+<meta name="twitter:description" content="Student-made sites for CCSU clubs.">
+<meta name="twitter:image" content="https://ccsuclubs.github.io/og-image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap" rel="stylesheet">
+<style>
+  :root { 
+    --royal: #1d3fd8; 
+    --lift: #3258f0; 
+    --sun: #ffcf33; 
+    color-scheme: light dark;
+    --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif; 
+  }
+  @media (prefers-color-scheme: dark) { 
+    :root { 
+      --royal: #17308f; 
+      --lift: #2342b5; 
+    } 
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { 
+    min-height: 100vh; 
+    min-height: 100svh; 
+    display: flex; 
+    flex-direction: column; 
+    position: relative; 
+    overflow-x: hidden;
+    background: var(--royal); 
+    color: #fff; 
+    font-family: var(--display); 
+  }
+  body::after { 
+    content: ""; 
+    position: absolute; 
+    right: -9rem; 
+    top: -6rem; 
+    width: 30rem; 
+    height: 30rem; 
+    border-radius: 50%;
+    background: var(--lift); 
+    animation: bob 7s ease-in-out infinite alternate; 
+    z-index: 0;
+  }
+  header, main { 
+    position: relative; 
+    z-index: 1; 
+    width: 100%; 
+    max-width: 60rem; 
+    margin: 0 auto; 
+    padding: 0 1.5rem; 
+  }
+  header { padding-top: 1.75rem; }
+  .brand { display: flex; align-items: center; gap: .75rem; font-weight: 700; font-size: 1.15rem; letter-spacing: -.01em; }
+  .brand img { width: 1.5rem; height: 1.5rem; border-radius: 0.35rem; }
+  main { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-top: 2rem; padding-bottom: 5rem; }
+
+  h1 { margin: 0 0 2rem; max-width: 13ch; font-weight: 800; font-size: clamp(2.7rem, 9vw, 6rem); line-height: 1; letter-spacing: -.03em; }
+  .w { display: inline-block; animation: rise .8s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i) * 90ms); }
+
+  .bar { 
+    align-self: flex-start; 
+    max-width: 100%; 
+    padding: .8rem 1.5rem; 
+    background: #fff; 
+    color: #0b1533; 
+    border-radius: 999px;
+    font-weight: 600; 
+    font-size: clamp(1.1rem, 3.6vw, 1.9rem); 
+    line-height: 1.25; 
+    letter-spacing: -.01em; 
+    overflow-wrap: anywhere;
+    box-shadow: 0 7px 0 rgba(6,16,70,.35); 
+    animation: rise .8s .6s cubic-bezier(.2,.7,.2,1) both; 
+  }
+  .host { color: #6a7491; }
+  .slug-text { color: #1d3fd8; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(.6em); } }
+  @keyframes bob { to { transform: translateY(2rem); } }
+  @media (prefers-reduced-motion: reduce) { 
+    *, *::after { animation: none !important; transition: none !important; } 
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <img src="favicon.png" alt="CCSU Clubs Logo">
+    CCSU Clubs
+  </div>
+</header>
+
+<main>
+  <h1><span class="w" style="--i:0">Student-made</span> <span class="w" style="--i:1">sites</span> <span class="w" style="--i:2">for</span> <span class="w" style="--i:3">CCSU</span> <span class="w" style="--i:4">clubs.</span></h1>
+  <div class="bar"><span class="host" id="host"></span><span class="slug-text">[club-name]</span></div>
+</main>
+
+<script>
+  var $ = function (id) { return document.getElementById(id); };
+  var currentHost = location.host || "ccsuclubs.github.io";
+  $("host").textContent = currentHost + "/";
+</script>
+</body>
+</html>
