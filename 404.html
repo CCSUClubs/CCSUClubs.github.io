@@ -149,28 +149,43 @@
 
 <script>
   var $ = function (id) { return document.getElementById(id); };
-  
+
   var currentHost = location.host || "ccsuclubs.github.io";
   $("host").textContent = currentHost + "/";
 
+  // Clean path (no leading/trailing slashes)
   var path = location.pathname.replace(/^\/+|\/+$/g, "");
-  var slug = path.split('/')[0];
+  var parts = path ? path.split("/") : [];
+  var slug = parts[0] || "";
+  var rest = parts.slice(1).join("/");          // everything after the slug
 
-  $("target-slug").textContent = slug;
+  $("target-slug").textContent = slug + (rest ? "/" + rest : "");
 
   if (slug && slug !== "404.html" && slug !== "index.html") {
     fetch("clubs.json")
       .then(function (r) { return r.json(); })
       .then(function (clubs) {
-        var match = clubs.find(function (c) { 
-          return c.slug.toLowerCase() === slug.toLowerCase(); 
+        var match = clubs.find(function (c) {
+          return c.slug.toLowerCase() === slug.toLowerCase();
         });
 
         if (match && match.site) {
-          var target = match.site.startsWith("http") ? match.site : "https://" + match.site;
+          // Build base URL
+          var base = match.site.startsWith("http")
+            ? match.site
+            : "https://" + match.site;
+
+          // Remove trailing slash from base so we can join cleanly
+          base = base.replace(/\/+$/, "");
+
+          // Append remaining path + query + hash
+          var target = base;
+          if (rest) target += "/" + rest;
+          target += location.search + location.hash;
+
           window.location.replace(target);
         } else {
-          show404("No club link exists for \"" + slug + "\".");
+          show404('No club link exists for "' + slug + '".');
         }
       })
       .catch(function () {
