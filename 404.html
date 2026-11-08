@@ -162,7 +162,8 @@
   $("target-slug").textContent = slug + (rest ? "/" + rest : "");
 
   if (slug && slug !== "404.html" && slug !== "index.html") {
-    fetch("clubs.json")
+    // IMPORTANT: absolute path so it works from nested URLs
+    fetch("/clubs.json")
       .then(function (r) { return r.json(); })
       .then(function (clubs) {
         var match = clubs.find(function (c) {
