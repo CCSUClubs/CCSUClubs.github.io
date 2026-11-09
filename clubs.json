@@ -8,5 +8,10 @@
     "slug": "asce",
     "name": "ASCE CCSU",
     "site": "asce.pages.dev"
+  },
+  {
+    "slug": "hackclub",
+    "name": "Gaynor McCown Hack Club",
+    "site": "gaynormccown.pages.dev"
   }
 ]
