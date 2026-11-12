@@ -13,5 +13,11 @@
     "slug": "hackclub",
     "name": "Gaynor McCown Hack Club",
     "site": "gaynormccown.pages.dev"
+  },
+  {
+    "slug": "ledger",
+    "name": "Club Ledger Template",
+    "site": "https://asalehengineer.github.io/Club-Ledger-Template/"
   }
+  
 ]
