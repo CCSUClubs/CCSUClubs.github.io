@@ -184,8 +184,8 @@
     font: inherit;
     font-weight: 700;
     width: 9.5ch;
-    min-width: 4ch;
-    max-width: 22ch;
+    min-width: 9.5ch;
+    max-width: 25ch;
     padding: 0;
     margin: 0;
   }
@@ -213,33 +213,41 @@
     opacity: 0.35;
   }
 
+  /* Upgraded Go Button */
   .go-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     margin-left: .65rem;
-    width: 2.35rem;
-    height: 2.35rem;
+    width: 2.6rem;
+    height: 2.6rem;
     border: none;
     border-radius: 50%;
     background: #1d3fd8;
     color: #fff;
-    font-family: inherit;
-    font-size: 1.15rem;
-    font-weight: 700;
     cursor: pointer;
     flex-shrink: 0;
-    transition: background .15s ease, transform .15s ease, opacity .15s ease;
+    transition: background .15s ease, transform .15s ease, box-shadow .15s ease;
+    box-shadow: 0 4px 12px rgba(29, 63, 216, 0.4);
   }
   .go-btn[hidden] {
     display: none;
   }
   .go-btn:hover {
     background: #142ea8;
-    transform: scale(1.06);
+    transform: scale(1.08);
+    box-shadow: 0 6px 16px rgba(29, 63, 216, 0.5);
   }
   .go-btn:active {
-    transform: scale(0.96);
+    transform: scale(0.95);
+  }
+  .arrow-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: transform .2s ease;
+  }
+  .go-btn:hover .arrow-icon {
+    transform: translateX(2px);
   }
 
   footer {
@@ -304,7 +312,12 @@
           aria-hidden="true"
         >
       </div>
-      <button type="submit" id="go-btn" class="go-btn" aria-label="Visit club site" hidden>→</button>
+      <button type="submit" id="go-btn" class="go-btn" aria-label="Visit club site" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="arrow-icon">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
     </form>
   </div>
 </main>
@@ -324,6 +337,7 @@
   var goBtn = $("go-btn");
 
   var allClubs = [];
+  var baseWidthCh = 9.5; // Matches "clubname" placeholder width
 
   fetch("clubs.json")
     .then(function (r) { return r.json(); })
@@ -352,10 +366,12 @@
     var raw = input.value;
     var rawTrim = raw.trim();
     var len = raw.length;
-    var inputWidth = (len > 0 ? Math.max(len + 0.5, 4) : 9.5) + "ch";
     
-    input.style.width = inputWidth;
-    phantomInput.style.width = inputWidth;
+    // Default to placeholder size, expand dynamically only if text exceeds base size
+    var dynamicWidth = Math.max(len + 0.5, baseWidthCh) + "ch";
+    
+    input.style.width = dynamicWidth;
+    phantomInput.style.width = dynamicWidth;
 
     var exact = findExactMatch(rawTrim);
     if (exact) {
@@ -408,7 +424,7 @@
   });
 
   form.addEventListener("click", function (e) {
-    if (e.target.tagName !== "BUTTON") input.focus();
+    if (e.target.tagName !== "BUTTON" && !e.target.closest("button")) input.focus();
   });
 
   form.addEventListener("submit", function (e) {
