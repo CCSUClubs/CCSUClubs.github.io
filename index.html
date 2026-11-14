@@ -45,14 +45,18 @@
     } 
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; }
+  html, body { 
+    margin: 0; 
+    padding: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
   body { 
-    min-height: 100vh; 
-    min-height: 100svh; 
     display: flex; 
     flex-direction: column; 
+    justify-content: space-between;
     position: relative; 
-    overflow: hidden;
     background: radial-gradient(circle at 20% 20%, var(--lift) 0%, var(--royal) 65%);
     color: #fff; 
     font-family: var(--display); 
@@ -91,7 +95,7 @@
     margin: 0 auto; 
     padding: 0 1.5rem; 
   }
-  header { padding-top: 1.75rem; }
+  header { padding-top: 1.5rem; }
   .brand { 
     display: inline-flex; 
     align-items: center; 
@@ -114,15 +118,14 @@
     display: flex; 
     flex-direction: column; 
     justify-content: center; 
-    padding-top: 2rem; 
-    padding-bottom: 3rem; 
+    padding: 1rem 0; 
   }
 
   h1 { 
-    margin: 0 0 2.25rem; 
+    margin: 0 0 2rem; 
     max-width: 13ch; 
     font-weight: 800; 
-    font-size: clamp(2.7rem, 9vw, 6rem); 
+    font-size: clamp(2.4rem, 8vw, 5.5rem); 
     line-height: 1; 
     letter-spacing: -.03em; 
   }
@@ -132,7 +135,7 @@
     animation-delay: calc(var(--i) * 90ms); 
   }
 
-  /* Interactive Short-Link Pill & home Wrapper */
+  /* Interactive Short-Link Pill Wrapper */
   .bar-wrap {
     position: relative;
     align-self: flex-start;
@@ -168,19 +171,39 @@
     white-space: nowrap;
     user-select: none;
   }
-  .slug-input {
+
+  /* Phantom Autocomplete Container Styles */
+  .input-container {
+    position: relative;
+    display: inline-block;
+  }
+  .slug-input, .phantom-input {
     border: none;
     outline: none;
     background: transparent;
     font: inherit;
     font-weight: 700;
-    color: #1d3fd8;
     width: 9.5ch;
     min-width: 4ch;
     max-width: 22ch;
     padding: 0;
     margin: 0;
+  }
+  .slug-input {
+    color: #1d3fd8;
     caret-color: #1d3fd8;
+    position: relative;
+    z-index: 2;
+  }
+  .phantom-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #1d3fd8;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 1;
+    white-space: pre;
   }
   .slug-input::placeholder {
     color: #1d3fd8;
@@ -219,58 +242,8 @@
     transform: scale(0.96);
   }
 
-  /* home Dropdown */
-  .suggestions {
-    position: absolute;
-    top: calc(100% + .75rem);
-    left: 0;
-    min-width: min(22rem, 100%);
-    background: #fff;
-    color: #0b1533;
-    border-radius: 1.15rem;
-    padding: .4rem;
-    box-shadow: 0 12px 28px rgba(6, 16, 70, 0.35), 0 4px 0 rgba(6, 16, 70, 0.25);
-    display: flex;
-    flex-direction: column;
-    gap: .2rem;
-    z-index: 10;
-  }
-  .suggestions[hidden] {
-    display: none;
-  }
-  .suggestion-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
-    border: none;
-    background: transparent;
-    padding: .6rem .9rem;
-    border-radius: .8rem;
-    font-family: inherit;
-    text-align: left;
-    cursor: pointer;
-    color: #0b1533;
-    transition: background .12s ease;
-  }
-  .suggestion-item:hover,
-  .suggestion-item.active {
-    background: #eef2ff;
-  }
-  .sug-slug {
-    font-weight: 700;
-    font-size: 1rem;
-    color: #1d3fd8;
-  }
-  .sug-name {
-    font-size: .88rem;
-    font-weight: 500;
-    color: #6a7491;
-  }
-
   footer {
-    padding-bottom: 1.75rem;
+    padding-bottom: 1.5rem;
     color: rgba(255, 255, 255, 0.72);
     font-size: .95rem;
     font-weight: 500;
@@ -312,21 +285,27 @@
   <div class="bar-wrap">
     <form class="bar" id="jump-form" aria-label="Go to a club site">
       <span class="host" id="host"></span>
-      <input 
-        type="text" 
-        id="slug-input" 
-        class="slug-input" 
-        placeholder="clubname" 
-        home="off" 
-        autocapitalize="none" 
-        spellcheck="false"
-        aria-label="Club slug"
-        aria-home="list"
-        aria-controls="suggestions"
-      >
-      <button type="submit" id="go-btn" class="go-btn" aria-label="Visit club site" hidden>&rarr;</button>
+      <div class="input-container">
+        <input 
+          type="text" 
+          id="slug-input" 
+          class="slug-input" 
+          placeholder="clubname" 
+          autocomplete="off" 
+          autocapitalize="none" 
+          spellcheck="false"
+          aria-label="Club slug"
+        >
+        <input 
+          type="text" 
+          id="phantom-input" 
+          class="phantom-input" 
+          tabindex="-1" 
+          aria-hidden="true"
+        >
+      </div>
+      <button type="submit" id="go-btn" class="go-btn" aria-label="Visit club site" hidden>→</button>
     </form>
-    <div class="suggestions" id="suggestions" role="listbox" hidden></div>
   </div>
 </main>
 
@@ -341,11 +320,10 @@
 
   var form = $("jump-form");
   var input = $("slug-input");
+  var phantomInput = $("phantom-input");
   var goBtn = $("go-btn");
-  var sugBox = $("suggestions");
 
   var allClubs = [];
-  var activeIndex = -1;
 
   fetch("clubs.json")
     .then(function (r) { return r.json(); })
@@ -371,12 +349,15 @@
   }
 
   function updateUI() {
-    var raw = input.value.trim();
+    var raw = input.value;
+    var rawTrim = raw.trim();
     var len = raw.length;
-    input.style.width = (len > 0 ? Math.max(len + 0.5, 4) : 9.5) + "ch";
+    var inputWidth = (len > 0 ? Math.max(len + 0.5, 4) : 9.5) + "ch";
+    
+    input.style.width = inputWidth;
+    phantomInput.style.width = inputWidth;
 
-    // Only show arrow button if input matches an entry in clubs.json
-    var exact = findExactMatch(raw);
+    var exact = findExactMatch(rawTrim);
     if (exact) {
       goBtn.hidden = false;
       form.classList.add("has-match");
@@ -385,99 +366,46 @@
       form.classList.remove("has-match");
     }
 
-    renderSuggestions(raw);
+    updateAutocomplete(raw);
   }
 
-  function renderSuggestions(query) {
+  function updateAutocomplete(query) {
     var q = query.toLowerCase();
+    if (!q) {
+      phantomInput.value = "";
+      return;
+    }
+
     var eligible = allClubs.filter(function (c) {
       return c.home !== false;
     });
 
-    var matches = q
-      ? eligible.filter(function (c) {
-          return c.slug.toLowerCase().indexOf(q) !== -1 ||
-                 (c.name && c.name.toLowerCase().indexOf(q) !== -1);
-        })
-      : eligible;
-
-    if (document.activeElement !== input || matches.length === 0) {
-      sugBox.hidden = true;
-      activeIndex = -1;
-      return;
-    }
-
-    if (matches.length === 1 && matches[0].slug.toLowerCase() === q) {
-      sugBox.hidden = true;
-      activeIndex = -1;
-      return;
-    }
-
-    sugBox.innerHTML = "";
-    activeIndex = -1;
-
-    matches.forEach(function (club) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "suggestion-item";
-      btn.setAttribute("role", "option");
-      btn.innerHTML =
-        '<span class="sug-slug">' + club.slug + '</span>' +
-        '<span class="sug-name">' + (club.name || "") + '</span>';
-
-      btn.addEventListener("mousedown", function (e) {
-        e.preventDefault();
-        input.value = club.slug;
-        updateUI();
-        sugBox.hidden = true;
-        window.location.href = getTargetUrl(club);
-      });
-
-      sugBox.appendChild(btn);
+    var match = eligible.find(function (c) {
+      return c.slug.toLowerCase().startsWith(q);
     });
 
-    sugBox.hidden = false;
+    if (match) {
+      var suggestion = match.slug;
+      var completion = query + suggestion.slice(query.length);
+      phantomInput.value = completion;
+    } else {
+      phantomInput.value = "";
+    }
   }
 
   input.addEventListener("input", updateUI);
   input.addEventListener("focus", updateUI);
-  input.addEventListener("blur", function () {
-    setTimeout(function () { sugBox.hidden = true; }, 120);
-  });
 
   input.addEventListener("keydown", function (e) {
-    var items = sugBox.querySelectorAll(".suggestion-item");
-    if (sugBox.hidden || !items.length) return;
-
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      activeIndex = (activeIndex + 1) % items.length;
-      highlightItem(items);
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      activeIndex = (activeIndex - 1 + items.length) % items.length;
-      highlightItem(items);
-    } else if (e.key === "Enter" && activeIndex >= 0) {
-      e.preventDefault();
-      items[activeIndex].dispatchEvent(new Event("mousedown"));
-    } else if (e.key === "Escape") {
-      sugBox.hidden = true;
+    if (e.key === "Tab" || e.key === "ArrowRight") {
+      if (phantomInput.value && phantomInput.value.toLowerCase().startsWith(input.value.toLowerCase())) {
+        e.preventDefault();
+        input.value = phantomInput.value;
+        updateUI();
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
     }
   });
-
-  function highlightItem(items) {
-    items.forEach(function (el, i) {
-      el.classList.toggle("active", i === activeIndex);
-    });
-    if (activeIndex >= 0) {
-      input.value = items[activeIndex].querySelector(".sug-slug").textContent;
-      var len = input.value.length;
-      input.style.width = Math.max(len + 0.5, 4) + "ch";
-      var exact = findExactMatch(input.value);
-      goBtn.hidden = !exact;
-      form.classList.toggle("has-match", !!exact);
-    }
-  }
 
   form.addEventListener("click", function (e) {
     if (e.target.tagName !== "BUTTON") input.focus();
