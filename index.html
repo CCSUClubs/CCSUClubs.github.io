@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CCSU Clubs</title>
 <meta name="description" content="Student-made sites for CCSU clubs.">
+<meta name="theme-color" content="#1d3fd8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17308f" media="(prefers-color-scheme: dark)">
 
 <!-- Favicon & Icons -->
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -50,24 +52,38 @@
     display: flex; 
     flex-direction: column; 
     position: relative; 
-    overflow-x: hidden;
-    background: var(--royal); 
+    overflow: hidden;
+    background: radial-gradient(circle at 20% 20%, var(--lift) 0%, var(--royal) 65%);
     color: #fff; 
     font-family: var(--display); 
   }
-  body::after { 
+
+  /* Ambient background shapes */
+  body::before, body::after { 
     content: ""; 
     position: absolute; 
+    border-radius: 50%;
+    background: var(--lift); 
+    opacity: 0.65;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after { 
     right: -9rem; 
     top: -6rem; 
     width: 30rem; 
     height: 30rem; 
-    border-radius: 50%;
-    background: var(--lift); 
     animation: bob 7s ease-in-out infinite alternate; 
-    z-index: 0;
   }
-  header, main { 
+  body::before {
+    left: -12rem;
+    bottom: -12rem;
+    width: 26rem;
+    height: 26rem;
+    animation: bob 9s ease-in-out infinite alternate-reverse;
+  }
+
+  header, main, footer { 
     position: relative; 
     z-index: 1; 
     width: 100%; 
@@ -76,56 +92,404 @@
     padding: 0 1.5rem; 
   }
   header { padding-top: 1.75rem; }
-  .brand { display: flex; align-items: center; gap: .75rem; font-weight: 700; font-size: 1.15rem; letter-spacing: -.01em; }
-  .brand img { width: 1.5rem; height: 1.5rem; border-radius: 0.35rem; }
-  main { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-top: 2rem; padding-bottom: 5rem; }
+  .brand { 
+    display: inline-flex; 
+    align-items: center; 
+    gap: .65rem; 
+    font-weight: 700; 
+    font-size: 1.15rem; 
+    letter-spacing: -.01em; 
+    color: #fff;
+    text-decoration: none;
+  }
+  .brand-mark {
+    width: 1.65rem;
+    height: 1.65rem;
+    flex-shrink: 0;
+    overflow: visible;
+  }
 
-  h1 { margin: 0 0 2rem; max-width: 13ch; font-weight: 800; font-size: clamp(2.7rem, 9vw, 6rem); line-height: 1; letter-spacing: -.03em; }
-  .w { display: inline-block; animation: rise .8s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i) * 90ms); }
+  main { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    padding-top: 2rem; 
+    padding-bottom: 3rem; 
+  }
+
+  h1 { 
+    margin: 0 0 2.25rem; 
+    max-width: 13ch; 
+    font-weight: 800; 
+    font-size: clamp(2.7rem, 9vw, 6rem); 
+    line-height: 1; 
+    letter-spacing: -.03em; 
+  }
+  .w { 
+    display: inline-block; 
+    animation: rise .8s cubic-bezier(.2,.7,.2,1) both; 
+    animation-delay: calc(var(--i) * 90ms); 
+  }
+
+  /* Interactive Short-Link Pill & home Wrapper */
+  .bar-wrap {
+    position: relative;
+    align-self: flex-start;
+    max-width: 100%;
+    animation: rise .8s .55s cubic-bezier(.2,.7,.2,1) both;
+  }
 
   .bar { 
-    align-self: flex-start; 
+    display: inline-flex;
+    align-items: center;
     max-width: 100%; 
-    padding: .8rem 1.5rem; 
+    padding: .75rem 1.5rem; 
     background: #fff; 
     color: #0b1533; 
     border-radius: 999px;
     font-weight: 600; 
-    font-size: clamp(1.1rem, 3.6vw, 1.9rem); 
+    font-size: clamp(1.05rem, 3.4vw, 1.75rem); 
     line-height: 1.25; 
     letter-spacing: -.01em; 
-    overflow-wrap: anywhere;
-    box-shadow: 0 7px 0 rgba(6,16,70,.35); 
-    animation: rise .8s .6s cubic-bezier(.2,.7,.2,1) both; 
+    box-shadow: 0 8px 0 rgba(6,16,70,.35); 
+    transition: transform .18s ease, box-shadow .18s ease, padding-right .2s ease;
+    cursor: text;
   }
-  .host { color: #6a7491; }
-  .slug-text { color: #1d3fd8; }
+  .bar.has-match {
+    padding-right: .65rem;
+  }
+  .bar:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 0 rgba(6,16,70,.4), 0 0 0 3px var(--sun);
+  }
+  .host { 
+    color: #6a7491; 
+    white-space: nowrap;
+    user-select: none;
+  }
+  .slug-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font: inherit;
+    font-weight: 700;
+    color: #1d3fd8;
+    width: 9.5ch;
+    min-width: 4ch;
+    max-width: 22ch;
+    padding: 0;
+    margin: 0;
+    caret-color: #1d3fd8;
+  }
+  .slug-input::placeholder {
+    color: #1d3fd8;
+    opacity: 0.7;
+  }
+  .slug-input:focus::placeholder {
+    opacity: 0.35;
+  }
+
+  .go-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: .65rem;
+    width: 2.35rem;
+    height: 2.35rem;
+    border: none;
+    border-radius: 50%;
+    background: #1d3fd8;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .15s ease, transform .15s ease, opacity .15s ease;
+  }
+  .go-btn[hidden] {
+    display: none;
+  }
+  .go-btn:hover {
+    background: #142ea8;
+    transform: scale(1.06);
+  }
+  .go-btn:active {
+    transform: scale(0.96);
+  }
+
+  /* home Dropdown */
+  .suggestions {
+    position: absolute;
+    top: calc(100% + .75rem);
+    left: 0;
+    min-width: min(22rem, 100%);
+    background: #fff;
+    color: #0b1533;
+    border-radius: 1.15rem;
+    padding: .4rem;
+    box-shadow: 0 12px 28px rgba(6, 16, 70, 0.35), 0 4px 0 rgba(6, 16, 70, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+    z-index: 10;
+  }
+  .suggestions[hidden] {
+    display: none;
+  }
+  .suggestion-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: .6rem .9rem;
+    border-radius: .8rem;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    color: #0b1533;
+    transition: background .12s ease;
+  }
+  .suggestion-item:hover,
+  .suggestion-item.active {
+    background: #eef2ff;
+  }
+  .sug-slug {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1d3fd8;
+  }
+  .sug-name {
+    font-size: .88rem;
+    font-weight: 500;
+    color: #6a7491;
+  }
+
+  footer {
+    padding-bottom: 1.75rem;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: .95rem;
+    font-weight: 500;
+    animation: rise .8s .75s cubic-bezier(.2,.7,.2,1) both;
+  }
+  footer .period {
+    color: var(--sun);
+    font-weight: 800;
+  }
 
   @keyframes rise { from { opacity: 0; transform: translateY(.6em); } }
   @keyframes bob { to { transform: translateY(2rem); } }
   @media (prefers-reduced-motion: reduce) { 
-    *, *::after { animation: none !important; transition: none !important; } 
+    *, *::before, *::after { animation: none !important; transition: none !important; } 
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand">
-    <img src="favicon.png" alt="CCSU Clubs Logo">
+  <a href="/" class="brand">
+    <svg class="brand-mark" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+      <path d="M 73 28 A 34 34 0 1 0 73 72" stroke="#ffffff" stroke-width="19" stroke-linecap="round"/>
+      <circle cx="74" cy="50" r="12" fill="#ffcf33"/>
+    </svg>
     CCSU Clubs
-  </div>
+  </a>
 </header>
 
 <main>
-  <h1><span class="w" style="--i:0">Student-made</span> <span class="w" style="--i:1">sites</span> <span class="w" style="--i:2">for</span> <span class="w" style="--i:3">CCSU</span> <span class="w" style="--i:4">clubs.</span></h1>
-  <div class="bar"><span class="host" id="host"></span><span class="slug-text">[club-name]</span></div>
+  <h1>
+    <span class="w" style="--i:0">Student-made</span> 
+    <span class="w" style="--i:1">sites</span> 
+    <span class="w" style="--i:2">for</span> 
+    <span class="w" style="--i:3">CCSU</span> 
+    <span class="w" style="--i:4">clubs.</span>
+  </h1>
+
+  <div class="bar-wrap">
+    <form class="bar" id="jump-form" aria-label="Go to a club site">
+      <span class="host" id="host"></span>
+      <input 
+        type="text" 
+        id="slug-input" 
+        class="slug-input" 
+        placeholder="clubname" 
+        home="off" 
+        autocapitalize="none" 
+        spellcheck="false"
+        aria-label="Club slug"
+        aria-home="list"
+        aria-controls="suggestions"
+      >
+      <button type="submit" id="go-btn" class="go-btn" aria-label="Visit club site" hidden>&rarr;</button>
+    </form>
+    <div class="suggestions" id="suggestions" role="listbox" hidden></div>
+  </div>
 </main>
+
+<footer>
+  Built by Central Students for Central Students<span class="period">.</span>
+</footer>
 
 <script>
   var $ = function (id) { return document.getElementById(id); };
   var currentHost = location.host || "ccsuclubs.github.io";
   $("host").textContent = currentHost + "/";
+
+  var form = $("jump-form");
+  var input = $("slug-input");
+  var goBtn = $("go-btn");
+  var sugBox = $("suggestions");
+
+  var allClubs = [];
+  var activeIndex = -1;
+
+  fetch("clubs.json")
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (Array.isArray(data)) {
+        allClubs = data;
+        updateUI();
+      }
+    })
+    .catch(function () {});
+
+  function findExactMatch(val) {
+    var clean = val.trim().toLowerCase();
+    if (!clean) return null;
+    return allClubs.find(function (c) {
+      return c.slug.toLowerCase() === clean;
+    }) || null;
+  }
+
+  function getTargetUrl(club) {
+    if (!club || !club.site) return "/" + encodeURIComponent(club.slug);
+    return club.site.startsWith("http") ? club.site : "https://" + club.site;
+  }
+
+  function updateUI() {
+    var raw = input.value.trim();
+    var len = raw.length;
+    input.style.width = (len > 0 ? Math.max(len + 0.5, 4) : 9.5) + "ch";
+
+    // Only show arrow button if input matches an entry in clubs.json
+    var exact = findExactMatch(raw);
+    if (exact) {
+      goBtn.hidden = false;
+      form.classList.add("has-match");
+    } else {
+      goBtn.hidden = true;
+      form.classList.remove("has-match");
+    }
+
+    renderSuggestions(raw);
+  }
+
+  function renderSuggestions(query) {
+    var q = query.toLowerCase();
+    var eligible = allClubs.filter(function (c) {
+      return c.home !== false;
+    });
+
+    var matches = q
+      ? eligible.filter(function (c) {
+          return c.slug.toLowerCase().indexOf(q) !== -1 ||
+                 (c.name && c.name.toLowerCase().indexOf(q) !== -1);
+        })
+      : eligible;
+
+    if (document.activeElement !== input || matches.length === 0) {
+      sugBox.hidden = true;
+      activeIndex = -1;
+      return;
+    }
+
+    if (matches.length === 1 && matches[0].slug.toLowerCase() === q) {
+      sugBox.hidden = true;
+      activeIndex = -1;
+      return;
+    }
+
+    sugBox.innerHTML = "";
+    activeIndex = -1;
+
+    matches.forEach(function (club) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "suggestion-item";
+      btn.setAttribute("role", "option");
+      btn.innerHTML =
+        '<span class="sug-slug">' + club.slug + '</span>' +
+        '<span class="sug-name">' + (club.name || "") + '</span>';
+
+      btn.addEventListener("mousedown", function (e) {
+        e.preventDefault();
+        input.value = club.slug;
+        updateUI();
+        sugBox.hidden = true;
+        window.location.href = getTargetUrl(club);
+      });
+
+      sugBox.appendChild(btn);
+    });
+
+    sugBox.hidden = false;
+  }
+
+  input.addEventListener("input", updateUI);
+  input.addEventListener("focus", updateUI);
+  input.addEventListener("blur", function () {
+    setTimeout(function () { sugBox.hidden = true; }, 120);
+  });
+
+  input.addEventListener("keydown", function (e) {
+    var items = sugBox.querySelectorAll(".suggestion-item");
+    if (sugBox.hidden || !items.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      activeIndex = (activeIndex + 1) % items.length;
+      highlightItem(items);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      activeIndex = (activeIndex - 1 + items.length) % items.length;
+      highlightItem(items);
+    } else if (e.key === "Enter" && activeIndex >= 0) {
+      e.preventDefault();
+      items[activeIndex].dispatchEvent(new Event("mousedown"));
+    } else if (e.key === "Escape") {
+      sugBox.hidden = true;
+    }
+  });
+
+  function highlightItem(items) {
+    items.forEach(function (el, i) {
+      el.classList.toggle("active", i === activeIndex);
+    });
+    if (activeIndex >= 0) {
+      input.value = items[activeIndex].querySelector(".sug-slug").textContent;
+      var len = input.value.length;
+      input.style.width = Math.max(len + 0.5, 4) + "ch";
+      var exact = findExactMatch(input.value);
+      goBtn.hidden = !exact;
+      form.classList.toggle("has-match", !!exact);
+    }
+  }
+
+  form.addEventListener("click", function (e) {
+    if (e.target.tagName !== "BUTTON") input.focus();
+  });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var exact = findExactMatch(input.value);
+    if (exact) {
+      window.location.href = getTargetUrl(exact);
+    }
+  });
 </script>
 </body>
 </html>
