@@ -2,22 +2,25 @@
   {
     "slug": "centralcares",
     "name": "Central Cares",
-    "site": "centralcares.pages.dev"
+    "site": "centralcares.pages.dev",
+    "home": true
   },
   {
     "slug": "asce",
     "name": "ASCE CCSU",
-    "site": "asce.pages.dev"
+    "site": "asce.pages.dev",
+    "home": true
   },
   {
     "slug": "hackclub",
     "name": "Gaynor McCown Hack Club",
-    "site": "gaynormccown.pages.dev"
+    "site": "gaynormccown.pages.dev",
+    "home": false
   },
   {
     "slug": "ledger",
     "name": "Club Ledger Template",
-    "site": "https://asalehengineer.github.io/Club-Ledger-Template/"
+    "site": "https://asalehengineer.github.io/Club-Ledger-Template/",
+    "home": true
   }
-  
 ]
