@@ -6,6 +6,18 @@
     "home": true
   },
   {
+    "slug": "ballroom",
+    "name": "Ballroom Dance Club",
+    "site": "ccsuballroom.github.io",
+    "home": false
+  },
+  {
+    "slug": "ballroomdance",
+    "name": "Ballroom Dance Club",
+    "site": "ccsuballroom.github.io",
+    "home": true
+  },
+  {
     "slug": "asce",
     "name": "American Society of Civil Engineers",
     "site": "asce.pages.dev",
